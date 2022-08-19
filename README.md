@@ -1,2 +1,2 @@
-# docker-phoenix
+# docker-phoenix-dev
 A Phoenix development environment
