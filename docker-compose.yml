@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+  # Rename "phoenix" to the application name: hello-world
   phoenix:
     build: .
     volumes:
@@ -8,7 +9,9 @@ services:
     ports:
       - "4000:4000"
     depends_on:
+      # The depends_on value must be the same as the db service: hello-world-db
       - db
+  # Rename "db" for the application: hello-world-db
   db:
     image: postgres:9.6
     environment:

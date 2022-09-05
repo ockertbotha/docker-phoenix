@@ -1,18 +1,17 @@
 # docker-phoenix-dev
 Creating a Dockerized Phoenix development environment.
 
-## Step 1: Clone the Project
+## Step a1: Clone the Project
 The default values in this project will create a basic working environment.
 - Review the contents of Dockerfile
-- Review the contents of docker-compose
+- Review the contents of docker-compose, rename as necessary
 
-
-## Step 2: Build the image
+## Step a2: Build the image
 ``` 
 $ docker-compose build 
 ``` 
 
-## Step 3: create "src" directory and command "mix" alias
+## Step a3: create "src" directory and command "mix" alias
 The "src" directory will contain the Phoenix application.
 ``` 
 $ mkdir src
@@ -22,9 +21,9 @@ Create a "mix" alias to run the Elixir commands.
 $ alias mix="docker-compose run --rm phoenix mix"
 ``` 
 
+> The "src/" directory has been .gitignore'd, so review that file to make sure it matches your intentions
 
-
-## Step 4: Initialize and configure a new Phoenix application
+## Step a4: Initialize and configure a new Phoenix application
 This command will create a new Phoenix apllication called "hello" under the "./src" directory, which will be mounted inside the container under "/app" (the default working directory).
 
 ``` 
@@ -50,7 +49,7 @@ config :hello, HelloWeb.Endpoint,
 Initialize the database with Ecto
 
 ``` 
-$ src
+$ cd src
 $ mix ecto.create
 ``` 
 
@@ -61,7 +60,7 @@ $ mix ecto.migrate
 ``` 
 
 
-## Step 5: Start the application
+## Step a5: Start the application
 
 ``` 
 $ cd ..
@@ -71,4 +70,84 @@ $ docker-compose up
 Once started application will be available at http://localhost:4000 
 
 ## Acknowledgement
-This information is mostly from the following post: https://medium.com/swlh/use-docker-to-create-an-elixir-phoenix-development-environment-e1a81def1d2e
+The above information is mostly from the following post: https://medium.com/swlh/use-docker-to-create-an-elixir-phoenix-development-environment-e1a81def1d2e
+
+# Aliasing
+Setting that alias from earlier is going to get old pretty quickly, also you might not want your ```mix``` command to be aliased system wide. 
+
+Let's set things up so you can configure where it get's aliased.
+
+## Step b1: Add the following to your Terminal Profile file
+These steps have been tested using ZSH and by editing the .zshrc file.
+```
+mixes()
+{
+  # Check if a file called .alias-docker-phoenix-mix exists in the current directory
+  if [ -f ./.alias-docker-phoenix-mix ] ; then
+      # Run the phoenix mix command in the phoenix Docker container
+      docker-compose run --rm phoenix mix "$@"
+  else
+      # Run the usual mix command
+      mix "$@"
+  fi
+}
+
+alias mix=mixes
+```
+
+## Step b2: Create the .alias-docker-phoenix-mix file
+Navigate to your project directory and create the file
+```
+touch .alias-docker-phoenix-mix
+```
+
+## Step b3: Apply the new configuration and test
+```
+# Apply Configuration
+source ~/.zshrc 
+
+# Should run in the Docker container
+mix help
+```
+
+# Creating a new application
+The above steps will prove that the Docker imaged Phoenix app works.
+
+Now follow these steps to start creating your own application using this structure, please replace "new-project" with your actual-project:
+## Step c1: Create your project directory
+```
+mkdir new-project
+```
+## Step c2: Configure Docker
+Copy these files to your new project and confirm the contents:
+- docker-compose.yml : Confirm the service, database images names and port numbers
+- Dockerfile: Confirm the port numbers
+
+## Step c3: Add the alias-phoenix to your project directory
+```
+# From the project root
+touch .alias-docker-new-project-mix
+
+# Update mixes() function in terminal profile
+mixes()
+{
+  # Check if a file called .alias-docker-phoenix-mix exists in the current directory
+  if [ -f ./.alias-docker-phoenix-mix ] ; then
+      # Run the phoenix mix command in the phoenix Docker container
+      docker-compose run --rm phoenix mix "$@"
+  else if [ -f ./.alias-docker-new-project-mix ] ; then
+      # Run the phoenix mix command in the new-project Docker container
+      docker-compose run --rm new-project mix "$@"
+  else
+      # Run the usual mix command
+      mix "$@"
+  fi
+}
+
+# Apply the new Configuration
+source ~/.zshrc 
+```
+
+## Step c4: Build and initialize the project
+Work through Steps a2 - a5 replacing the project name where necessary.
+
