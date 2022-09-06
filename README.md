@@ -95,6 +95,20 @@ mixes()
 }
 
 alias mix=mixes
+
+iexes()
+{
+  # Check if a file called .alias-docker-phoenix-mix exists in the current directory
+  if [ -f ./.alias-docker-phoenix-mix ] ; then
+      # Run the elixir iex command in the phoenix Docker container
+      docker-compose run --rm phoenix iex "$@"
+  else
+      # Run the usual mix command
+      iex "$@"
+  fi
+}
+
+alias iex=iexes
 ```
 
 ## Step b2: Create the .alias-docker-phoenix-mix file
@@ -130,7 +144,7 @@ Copy these files to your new project and confirm the contents:
 # From the project root
 touch .alias-docker-new-project-mix
 
-# Update mixes() function in terminal profile
+# Updating the functions in terminal profile
 mixes()
 {
   # Check if a file called .alias-docker-phoenix-mix exists in the current directory
@@ -145,6 +159,23 @@ mixes()
       mix "$@"
   fi
 }
+
+iexes()
+{
+  # Check if a file called .alias-docker-phoenix-mix exists in the current directory
+  if [ -f ./.alias-docker-phoenix-mix ] ; then
+      # Run the elixir iex command in the phoenix Docker container
+      docker-compose run --rm phoenix iex "$@"
+  elif [ -f ./.alias-docker-new-project-mix ] ; then
+      # Run the elixir iex command in the new-project Docker container
+      docker-compose run --rm new-project iex "$@"      
+  else
+      # Run the usual mix command
+      iex "$@"
+  fi
+}
+
+alias iex=iexes
 
 # Apply the new Configuration
 source ~/.zshrc 
