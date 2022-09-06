@@ -16,7 +16,8 @@ The "src" directory will contain the Phoenix application.
 ``` 
 $ mkdir src
 ``` 
-Create a "mix" alias to run the Elixir commands.
+Create a "mix" alias to run the Elixir commands. 
+(Only if you have not previously added the alias function from the later steps)
 ``` 
 $ alias mix="docker-compose run --rm phoenix mix"
 ``` 
@@ -47,6 +48,7 @@ config :hello, HelloWeb.Endpoint,
 ``` 
 
 Initialize the database with Ecto
+> Aliasing: Add the appropriate .alias-mix-file to the src directory
 
 ``` 
 $ cd src
@@ -135,7 +137,7 @@ mixes()
   if [ -f ./.alias-docker-phoenix-mix ] ; then
       # Run the phoenix mix command in the phoenix Docker container
       docker-compose run --rm phoenix mix "$@"
-  else if [ -f ./.alias-docker-new-project-mix ] ; then
+  elif [ -f ./.alias-docker-new-project-mix ] ; then
       # Run the phoenix mix command in the new-project Docker container
       docker-compose run --rm new-project mix "$@"
   else
@@ -149,5 +151,5 @@ source ~/.zshrc
 ```
 
 ## Step c4: Build and initialize the project
-Work through Steps a2 - a5 replacing the project name where necessary.
+Work through Steps a2 - a5 replacing the project name where necessary and remembering you don't need the alias bit.
 
